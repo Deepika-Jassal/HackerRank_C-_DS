@@ -1,0 +1,16 @@
+string hackerrankInString(string s) {
+    string str="hackerrank";
+    int i=0;
+    for(char x:s){
+        cout<<"i: "<<str[i]<<" x: "<<x<<endl;
+        if(i<=str.length())
+        {
+            if(x==str[i]) i++;
+        }
+    }
+    cout<<i;
+    cout<<endl;
+    if(i==str.length()) return "YES";
+    return "NO"; 
+}
+
