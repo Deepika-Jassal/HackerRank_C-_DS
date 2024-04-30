@@ -1,0 +1,122 @@
+bool isValidHorizontal(vector<string> & crossword,string w,int i,int j){
+       if(j-1>=0 && crossword[i][j-1]!='+') return false;
+       
+       else if(j+w.length()<crossword[0].size() && crossword[i][j+w.size()]!='+') 
+            return false;
+            
+       for(int jj=0;jj<w.size();jj++){
+             if(j+jj>=crossword.size()) return false;
+           if(crossword[i][j+jj]=='-' || crossword[i][jj+j]==w[jj]){
+               continue;
+           }
+           else return false;
+       }     
+       
+       return true;
+ }
+ 
+ 
+ bool isValidVertical(vector<string> & crossword,string w,int i,int j){
+       if(i-1>=0 && crossword[i-1][j]!='+') return false;
+       
+       else if(i+w.size()<crossword.size() && crossword[i+w.size()][j]!='+') 
+            return false;
+            
+       for(int ii=0;ii<w.size();ii++){
+           if(i+ii>=crossword.size()) return false;
+           if(crossword[i+ii][j]=='-' || crossword[i+ii][j]==w[ii]){
+               continue;
+           }
+           else return false;
+       }     
+       
+       return true;
+ }
+ 
+ vector<bool> filledHorizontal(vector<string> & crossword,string w,int i,int j){
+       vector<bool> fill;
+       for(int jj=0;jj<w.size();jj++){
+           if(crossword[i][j+jj]=='-'){
+               crossword[i][j+jj]=w[jj];
+               fill.push_back(true);
+           }
+           else fill.push_back(false);
+       }
+     return fill;
+ }
+ 
+void unfilledHorizontal(vector<string> & crossword,vector<bool> fill,int i,int j){
+    for(int jj=0;jj<=fill.size()-1;jj++)
+    {
+        if(fill[jj]==true) {
+            crossword[i][j+jj]='-';
+        }
+    }
+}
+
+vector<bool> filledVertical(vector<string> & crossword,string w,int i,int j){
+       vector<bool> fill;
+       for(int ii=0;ii<w.size();ii++){
+           if(crossword[i+ii][j]=='-'){
+               crossword[i+ii][j]=w[ii];
+               fill.push_back(true);
+           }
+           else fill.push_back(false);
+       }
+     return fill;
+ }
+ 
+void unfilledVertical(vector<string> & crossword,vector<bool> fill,int i,int j){
+    for(int ii=0;ii<=fill.size()-1;ii++)
+    {
+        if(fill[ii]==true) {
+            crossword[i+ii][j]='-';
+        }
+    }
+}
+ 
+ 
+ 
+ bool crosswordSolve(vector<string> & crossword,vector<string> & word,int idx){
+     
+     if(idx==word.size()){
+         for(int i=0;i<10;i++){
+             for(int j=0;j<10;j++){
+             cout<<"i :"<<i<<"j:"<<j<<" "<<crossword[i][j]<<" ";}
+             cout<<"\n";
+         }
+        return true;
+     }
+     string w=word[idx];
+     //cout<<"w-->"<<w;
+     for(int i=0;i<crossword.size();i++){
+         for(int j=0;j<crossword[i].size();j++){
+             if(crossword[i][j]=='-' || crossword[i][j]==w[0]){
+             if(isValidHorizontal(crossword,w,i,j)){
+                 vector<bool> fill=filledHorizontal(crossword,w,i,j);
+                 if(crosswordSolve(crossword,word,idx+1)) return true;
+                 unfilledHorizontal(crossword,fill,i,j);
+             }
+             if(isValidVertical(crossword,w,i,j)){
+                 vector<bool> fill=filledVertical(crossword,w,i,j);
+                 if(crosswordSolve(crossword,word,idx+1)) return true;
+                 unfilledVertical(crossword,fill,i,j);
+             }
+             }
+         }
+     }
+     return false; 
+}  
+
+vector<string> crosswordPuzzle(vector<string> crossword, string words) {
+       vector<string> wordnew;
+       string w;
+       stringstream ss(words);
+       while(getline(ss,w,';')){
+           wordnew.push_back(w);
+       }
+      crosswordSolve(crossword,wordnew,0);
+      
+      return crossword;
+}
+
